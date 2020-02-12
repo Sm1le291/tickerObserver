@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -38,30 +39,44 @@ namespace TickerObserver
             
 
             var pauseBetweenAttempts = int.Parse(_configuration["TickersFeed:RefreshTimeSeconds"]) * 1000;
+            var rawTickers = _configuration["TickersFeed:Tickers"];
+
+            string[] tickers;
+            if(string.IsNullOrWhiteSpace(rawTickers))
+            {
+                return;
+            }
+
+            tickers = rawTickers.Split(',');
+
 
             Console.WriteLine("Press ESC to stop");
             do
             {
                 while (!Console.KeyAvailable)
                 {
-                    _logger.LogInformation($"Getting topics from SeekingAlpha for ticker: ABEO");
-                    var seekingAlphaTickers = await _seekingAlphaService.GetTopicsByTicker("ABEO");
-                    _logger.LogInformation($"Getting topics from Yahoo for ticker: ABEO");
-                    var yahooTickerTopics = await _yahooTickerService.GetTopicsByTicker("ABEO");
-                    
-                    foreach (var seekingAlphaTicker in seekingAlphaTickers)
+                    foreach (var ticker in tickers)
                     {
-                        _logger.LogInformation($"Processing topic from SeekingAlpha with GUID: {seekingAlphaTicker.Guid}");
-                        await ProcessTopic(seekingAlphaTicker);
-                    }
+                        _logger.LogInformation($"Getting topics from SeekingAlpha for ticker: {ticker}");
+                        var seekingAlphaTickers = await _seekingAlphaService.GetTopicsByTicker(ticker);
+                        _logger.LogInformation($"Getting topics from Yahoo for ticker: {ticker}");
+                        var yahooTickerTopics = await _yahooTickerService.GetTopicsByTicker(ticker);
+                    
+                        foreach (var seekingAlphaTicker in seekingAlphaTickers)
+                        {
+                            _logger.LogInformation($"Processing topic from SeekingAlpha with GUID(NOT LINK!): {seekingAlphaTicker.Guid}");
+                            await ProcessTopic(seekingAlphaTicker);
+                        }
 
-                    foreach (var yahooTickerTopic in yahooTickerTopics)
-                    {
-                        _logger.LogInformation($"Processing topic from Yahoo with GUID: {yahooTickerTopic.Guid}");
-                        await ProcessTopic(yahooTickerTopic);
+                        foreach (var yahooTickerTopic in yahooTickerTopics)
+                        {
+                            _logger.LogInformation($"Processing topic from Yahoo with GUID(NOT LINK!): {yahooTickerTopic.Guid}");
+                            await ProcessTopic(yahooTickerTopic);
+                        }
+                    
+                        _logger.LogInformation($"Pause before next attempt: {pauseBetweenAttempts} milliseconds");
                     }
                     
-                    _logger.LogInformation($"Pause before next attempt: {pauseBetweenAttempts} milliseconds");
                     await Task.Delay(pauseBetweenAttempts);
                 }
                 
@@ -75,8 +90,7 @@ namespace TickerObserver
             if (!isSent)
             {
                 _logger.LogInformation($"Sending topic with GUID: {tickerTopic.Guid} to chat");
-                await _telegramBotService.SendMessage(
-                    tickerTopic.FullUrl + Environment.NewLine + tickerTopic.Title);
+                await _telegramBotService.SendMessage(tickerTopic);
                 await _topicService.MarkAsSent(tickerTopic.Guid);
                 _logger.LogDebug("Message sent");
             }

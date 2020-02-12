@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
+using TickerObserver.DomainModels;
 
 namespace TickerObserver.Services
 {
     public interface ITelegramBotService
     {
-        Task SendMessage(string message);
+        Task SendMessage(TickerTopic topic);
     }
 }

@@ -1,8 +1,11 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using TickerObserver.DomainModels;
 
 namespace TickerObserver.Services
 {
@@ -12,13 +15,18 @@ namespace TickerObserver.Services
 
         private readonly string _channelName;
         
-        public TelegramBotService(IConfiguration configuration)
+        private readonly ILogger<TelegramBotService> _logger;
+        
+        public TelegramBotService(IConfiguration configuration, ILogger<TelegramBotService> logger)
         {
             _botApiKey = configuration["TelegramClient:BotApiKey"];
             _channelName = $"@{configuration["TelegramClient:PublicChannelName"]}";
+            _logger = logger;
         }
-        public async Task SendMessage(string message)
+        public async Task SendMessage(TickerTopic topic)
         {
+            var message = BuildMessage(topic);
+            
             string urlString = $"https://api.telegram.org/bot{_botApiKey}/sendMessage?chat_id={_channelName}&text={message}";
             
             var webRequest = WebRequest.Create(urlString);
@@ -39,9 +47,26 @@ namespace TickerObserver.Services
                         }
                         
                         string responseStr = sb.ToString();
+                        
+                        _logger.LogInformation($"Message sent with response: {responseStr}");
                     }
                 }
             }
+        }
+
+        private string BuildMessage(TickerTopic tickerTopic)
+        {
+            var message = tickerTopic.FullUrl
+                          + Environment.NewLine
+                          + tickerTopic.Title
+                          + Environment.NewLine
+                          + "#"
+                          + tickerTopic.TickerName
+                          + Environment.NewLine
+                          + "#"
+                          + tickerTopic.Source.Replace(" ", "");
+
+            return message;
         }
     }
 }
