@@ -8,5 +8,9 @@ namespace TickerObserver.DataAccess.Interfaces
         Task Add(TickerTopic tickerTopic);
 
         Task<bool> IsExists(string guid);
+
+        Task MarkAsSent(string guid);
+        
+        Task<bool> IsSentAlready(string guid);
     }
 }

@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TickerObserver.DataAccess.Interfaces;
+using TickerObserver.DomainModels;
 using TickerObserver.Services;
 
 namespace TickerObserver
@@ -12,23 +15,75 @@ namespace TickerObserver
         private readonly ILogger<AppEntryPoint> _logger;
         private readonly ISeekingAlphaService _seekingAlphaService;
         private readonly IYahooTickerService _yahooTickerService;
-        private readonly ITelegramBotService _telegramBotService; 
-        public AppEntryPoint(ISeekingAlphaService seekingAlphaService, IYahooTickerService yahooTickerService, ILoggerFactory loggerFactory, ITelegramBotService telegramBotService)
+        private readonly ITelegramBotService _telegramBotService;
+        private readonly ITopicService _topicService;
+        public AppEntryPoint(
+            IConfiguration configuration,
+            ISeekingAlphaService seekingAlphaService,
+            IYahooTickerService yahooTickerService,
+            ILoggerFactory loggerFactory,
+            ITelegramBotService telegramBotService,
+            ITopicService topicService)
         {
             _seekingAlphaService = seekingAlphaService;
             _yahooTickerService = yahooTickerService;
             _telegramBotService = telegramBotService;
+            _topicService = topicService;
+            _configuration = configuration;
             _logger = loggerFactory.CreateLogger<AppEntryPoint>();
         }
 
         public async Task Execute()
         {
-            var result = await _seekingAlphaService.GetTopicsByTicker("ABEO");
-            var sdas = await _yahooTickerService.GetTopicsByTicker("ABEO");
             
-            await _telegramBotService.SendMessage("Hello Igor again");
-            _logger.LogDebug("Hello from AppEntryPoint");
-            
+
+            var pauseBetweenAttempts = int.Parse(_configuration["TickersFeed:RefreshTimeSeconds"]) * 1000;
+
+            Console.WriteLine("Press ESC to stop");
+            do
+            {
+                while (!Console.KeyAvailable)
+                {
+                    _logger.LogInformation($"Getting topics from SeekingAlpha for ticker: ABEO");
+                    var seekingAlphaTickers = await _seekingAlphaService.GetTopicsByTicker("ABEO");
+                    _logger.LogInformation($"Getting topics from Yahoo for ticker: ABEO");
+                    var yahooTickerTopics = await _yahooTickerService.GetTopicsByTicker("ABEO");
+                    
+                    foreach (var seekingAlphaTicker in seekingAlphaTickers)
+                    {
+                        _logger.LogInformation($"Processing topic from SeekingAlpha with GUID: {seekingAlphaTicker.Guid}");
+                        await ProcessTopic(seekingAlphaTicker);
+                    }
+
+                    foreach (var yahooTickerTopic in yahooTickerTopics)
+                    {
+                        _logger.LogInformation($"Processing topic from Yahoo with GUID: {yahooTickerTopic.Guid}");
+                        await ProcessTopic(yahooTickerTopic);
+                    }
+                    
+                    _logger.LogInformation($"Pause before next attempt: {pauseBetweenAttempts} milliseconds");
+                    await Task.Delay(pauseBetweenAttempts);
+                }
+                
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+        }
+
+        private async Task ProcessTopic(TickerTopic tickerTopic)
+        {
+            var isSent = await _topicService.IsSentAlready(tickerTopic.Guid);
+
+            if (!isSent)
+            {
+                _logger.LogInformation($"Sending topic with GUID: {tickerTopic.Guid} to chat");
+                await _telegramBotService.SendMessage(
+                    tickerTopic.FullUrl + Environment.NewLine + tickerTopic.Title);
+                await _topicService.MarkAsSent(tickerTopic.Guid);
+                _logger.LogDebug("Message sent");
+            }
+            else
+            {
+                _logger.LogInformation($"Topic with GUID : {tickerTopic.Guid}  has been sent already");
+            }
         }
     }
 }

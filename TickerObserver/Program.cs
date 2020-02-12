@@ -31,6 +31,7 @@ namespace TickerObserver
                 .AddSingleton<IHttpClientFactory>(h => new HttpClientFactory(GetRepositories()))
                 .AddScoped<IYahooTickerRepository, YahooTickerRepository>()
                 .AddScoped<ITickerTopicMapper, TickerTopicMapper>()
+                .AddScoped<ITopicService, TopicService>()
                 .AddScoped<ISeekingAlphaTickerRepository, SeekingAlphaRepository>()
                 .AddScoped<ISeekingAlphaService, SeekingAlphaService>()
                 .AddScoped<ITickerTopicRepository, TickerTopicRepository>()

@@ -12,20 +12,22 @@ using TickerObserver.Parsers;
 
 namespace TickerObserver.Services
 {
-    public class SeekingAlphaService : BaseTopicService, ISeekingAlphaService
+    public class SeekingAlphaService : ISeekingAlphaService
     {
         private readonly ISeekingAlphaTickerRepository _seekingAlphaTickerRepository;
 
         private readonly ISeekingAlphaRssParser _seekingAlphaRssParser;
+
+        private readonly ITopicService _topicService;
         
         public SeekingAlphaService(
+            ITopicService topicService,
             ISeekingAlphaTickerRepository seekingAlphaTickerRepository,
-            ISeekingAlphaRssParser seekingAlphaRssParser,
-            ITickerTopicMapper tickerTopicMapper,
-            ITickerTopicRepository tickerTopicRepository) : base(tickerTopicRepository, tickerTopicMapper)
+            ISeekingAlphaRssParser seekingAlphaRssParser)
         {
             _seekingAlphaTickerRepository = seekingAlphaTickerRepository;
             _seekingAlphaRssParser = seekingAlphaRssParser;
+            _topicService = topicService;
         }
 
 
@@ -44,7 +46,7 @@ namespace TickerObserver.Services
                     var topic = GetTickerTopic(rssItem, tickerName);
                     topics.Add(topic);
 
-                    await TrySaveTopic(topic, tickerName, "SeekingAlpha");
+                    await _topicService.TrySaveTopic(topic, tickerName, "SeekingAlpha");
                 }
             }
             

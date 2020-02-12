@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TickerObserver.DataAccess.Interfaces;
 using TickerObserver.DataAccess.Models;
 
@@ -20,9 +21,9 @@ namespace TickerObserver.DataAccess
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> IsExists(string guid)
+        public async Task< bool> IsExists(string guid)
         {
-            if (_context.TickerTopics.Any(x => x.Guid == guid))
+            if (await _context.TickerTopics.AnyAsync(x => x.Guid == guid))
             {
                 return true;
             }
@@ -40,6 +41,18 @@ namespace TickerObserver.DataAccess
                 _context.TickerTopics.Update(item);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> IsSentAlready(string guid)
+        {
+            var item = await _context.TickerTopics.FirstOrDefaultAsync(x => x.Guid == guid);
+
+            if (item != null && item.IsSentAlready)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -10,20 +10,22 @@ using TickerObserver.Mappers;
 
 namespace TickerObserver.Services
 {
-    public class YahooTickerService : BaseTopicService, IYahooTickerService
+    public class YahooTickerService : IYahooTickerService
     {
         private readonly IYahooTickerRepository _yahooTickerRepository;
         
         private readonly IParser<RssSchema> _rssParser;
         
+        private readonly ITopicService _topicService;
+        
         public YahooTickerService(
             IYahooTickerRepository yahooTickerRepository,
             IParser<RssSchema> rssParser,
-            ITickerTopicMapper tickerTopicMapper,
-            ITickerTopicRepository tickerTopicRepository) : base(tickerTopicRepository, tickerTopicMapper)
+            ITopicService topicService)
         {
             _yahooTickerRepository = yahooTickerRepository;
             _rssParser = rssParser;
+            _topicService = topicService;
         }
         
         public async Task<IEnumerable<TickerTopic>> GetTopicsByTicker(string tickerName)
@@ -40,7 +42,7 @@ namespace TickerObserver.Services
                     var topic = GetTickerTopic(rssItem, tickerName);
                     topics.Add(topic);
 
-                    await TrySaveTopic(topic, tickerName, "Yahoo");
+                    await _topicService.TrySaveTopic(topic, tickerName, "Yahoo");
                 }
             }
 

@@ -5,12 +5,12 @@ using TickerObserver.Mappers;
 
 namespace TickerObserver.Services
 {
-    public class BaseTopicService
+    public class TopicService : ITopicService
     {
         private readonly ITickerTopicRepository _tickerTopicRepository;
         
         private readonly ITickerTopicMapper _tickerTopicMapper;
-        public BaseTopicService(ITickerTopicRepository tickerTopicRepository, ITickerTopicMapper tickerTopicMapper)
+        public TopicService(ITickerTopicRepository tickerTopicRepository, ITickerTopicMapper tickerTopicMapper)
         {
             _tickerTopicRepository = tickerTopicRepository;
             _tickerTopicMapper = tickerTopicMapper;
@@ -23,6 +23,16 @@ namespace TickerObserver.Services
                 var item = _tickerTopicMapper.MapFromDomainModel(rssItem, tickerName, feedSource);
                 await _tickerTopicRepository.Add(item);
             }
+        }
+
+        public async Task MarkAsSent(string guid)
+        {
+            await _tickerTopicRepository.MarkAsSent(guid);
+        }
+        
+        public async Task<bool> IsSentAlready(string guid)
+        {
+            return await _tickerTopicRepository.IsSentAlready(guid);
         }
     }
 }
