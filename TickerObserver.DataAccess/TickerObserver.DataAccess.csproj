@@ -15,4 +15,10 @@
       <ProjectReference Include="..\TickerObserver.Core\TickerObserver.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="tickerObserver.db">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

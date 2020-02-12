@@ -10,19 +10,20 @@ using TickerObserver.Mappers;
 
 namespace TickerObserver.Services
 {
-    public class YahooTickerService : IYahooTickerService
+    public class YahooTickerService : BaseTopicService, IYahooTickerService
     {
         private readonly IYahooTickerRepository _yahooTickerRepository;
         
         private readonly IParser<RssSchema> _rssParser;
-
-        private readonly ITickerTopicMapper _tickerTopicMapper;
         
-        public YahooTickerService(IYahooTickerRepository yahooTickerRepository, IParser<RssSchema> rssParser, ITickerTopicMapper tickerTopicMapper)
+        public YahooTickerService(
+            IYahooTickerRepository yahooTickerRepository,
+            IParser<RssSchema> rssParser,
+            ITickerTopicMapper tickerTopicMapper,
+            ITickerTopicRepository tickerTopicRepository) : base(tickerTopicRepository, tickerTopicMapper)
         {
             _yahooTickerRepository = yahooTickerRepository;
             _rssParser = rssParser;
-            _tickerTopicMapper = tickerTopicMapper;
         }
         
         public async Task<IEnumerable<TickerTopic>> GetTopicsByTicker(string tickerName)
@@ -36,20 +37,28 @@ namespace TickerObserver.Services
 
                 foreach (var rssItem in rss)
                 {
-                    topics.Add(new TickerTopic
-                    {
-                        Source = rssItem.Author,
-                        Title = rssItem.Title,
-                        Description = rssItem.Content,
-                        TickerName = tickerName,
-                        FullUrl = rssItem.FeedUrl,
-                        PublishDate = rssItem.PublishDate,
-                        Guid = rssItem.InternalID
-                    });
+                    var topic = GetTickerTopic(rssItem, tickerName);
+                    topics.Add(topic);
+
+                    await TrySaveTopic(topic, tickerName, "Yahoo");
                 }
             }
 
             return topics;
+        }
+        
+        private TickerObserver.DomainModels.TickerTopic GetTickerTopic(RssSchema rssItem, string tickerName)
+        {
+            return new TickerTopic
+            {
+                Source = rssItem.Author,
+                Title = rssItem.Title,
+                Description = rssItem.Content,
+                TickerName = tickerName,
+                FullUrl = rssItem.FeedUrl,
+                PublishDate = rssItem.PublishDate,
+                Guid = rssItem.InternalID
+            };
         }
     }
 }

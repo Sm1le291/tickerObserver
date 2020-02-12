@@ -12,22 +12,20 @@ using TickerObserver.Parsers;
 
 namespace TickerObserver.Services
 {
-    public class SeekingAlphaService : ISeekingAlphaService
+    public class SeekingAlphaService : BaseTopicService, ISeekingAlphaService
     {
         private readonly ISeekingAlphaTickerRepository _seekingAlphaTickerRepository;
 
         private readonly ISeekingAlphaRssParser _seekingAlphaRssParser;
-
-        private readonly IParser<RssSchema> _rssParser;
         
-        private readonly ITickerTopicMapper _tickerTopicMapper;
-        
-        public SeekingAlphaService(ISeekingAlphaTickerRepository seekingAlphaTickerRepository, IParser<RssSchema> rssParser, ISeekingAlphaRssParser seekingAlphaRssParser, ITickerTopicMapper tickerTopicMapper)
+        public SeekingAlphaService(
+            ISeekingAlphaTickerRepository seekingAlphaTickerRepository,
+            ISeekingAlphaRssParser seekingAlphaRssParser,
+            ITickerTopicMapper tickerTopicMapper,
+            ITickerTopicRepository tickerTopicRepository) : base(tickerTopicRepository, tickerTopicMapper)
         {
             _seekingAlphaTickerRepository = seekingAlphaTickerRepository;
-            _rssParser = rssParser;
             _seekingAlphaRssParser = seekingAlphaRssParser;
-            _tickerTopicMapper = tickerTopicMapper;
         }
 
 
@@ -43,19 +41,28 @@ namespace TickerObserver.Services
 
                 foreach (var rssItem in rss)
                 {
-                    topics.Add(new TickerTopic
-                    {
-                        Source = rssItem.Source,
-                        Title = rssItem.Title,
-                        Description = rssItem.Description,
-                        TickerName = tickerName,
-                        FullUrl = rssItem.FullUrl,
-                        PublishDate = rssItem.PublishDate
-                    });
+                    var topic = GetTickerTopic(rssItem, tickerName);
+                    topics.Add(topic);
+
+                    await TrySaveTopic(topic, tickerName, "SeekingAlpha");
                 }
             }
             
             return topics;
+        }
+
+        private TickerObserver.DomainModels.TickerTopic GetTickerTopic(SeekingAlphaRssItem rssItem, string tickerName)
+        {
+            return new TickerTopic
+            {
+                Source = rssItem.Source,
+                Title = rssItem.Title,
+                Description = rssItem.Description,
+                TickerName = tickerName,
+                FullUrl = rssItem.FullUrl,
+                PublishDate = rssItem.PublishDate,
+                Guid = rssItem.GUID
+            };
         }
     }
 }

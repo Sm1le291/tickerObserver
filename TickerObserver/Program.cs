@@ -33,6 +33,7 @@ namespace TickerObserver
                 .AddScoped<ITickerTopicMapper, TickerTopicMapper>()
                 .AddScoped<ISeekingAlphaTickerRepository, SeekingAlphaRepository>()
                 .AddScoped<ISeekingAlphaService, SeekingAlphaService>()
+                .AddScoped<ITickerTopicRepository, TickerTopicRepository>()
                 .AddScoped<ITelegramBotService, TelegramBotService>()
                 .AddScoped<IYahooTickerService, YahooTickerService>()
                 .AddScoped<ISeekingAlphaRssParser, SeekingAlphaRssParser>()
@@ -40,6 +41,7 @@ namespace TickerObserver
                 .AddSingleton<HttpClient>(i => HttpClient)
                 .AddTransient<AppEntryPoint>()
                 .AddTransient<IConfiguration>(i => configuration)
+                .AddDbContext<TickerObserverDbContext>()
                 .BuildServiceProvider();
 
             serviceProvider
