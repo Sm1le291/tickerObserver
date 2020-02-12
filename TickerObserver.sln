@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver", "TickerObserver\TickerObserver.csproj", "{B5A4BF37-57A6-441E-B572-89FD1EC959D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.DataAccess", "TickerObserver.DataAccess\TickerObserver.DataAccess.csproj", "{C3464D70-24DC-4CAD-8DE8-665C3F37AE7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.Services", "TickerObserver.Services\TickerObserver.Services.csproj", "{B65F60E4-DACB-4FB7-B1F5-D54AC9FF3BDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.Core", "TickerObserver.Core\TickerObserver.Core.csproj", "{EC69F988-A371-4A7B-9D04-5EEA361CCD07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.DomainModels", "TickerObserver.DomainModels\TickerObserver.DomainModels.csproj", "{0BB06095-A158-4945-9DD8-B64B793EDC89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.Parsers", "TickerObserver.Parsers\TickerObserver.Parsers.csproj", "{85628EB9-9383-4F33-88E9-2DF33D565EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TickerObserver.Mappers", "TickerObserver.Mappers\TickerObserver.Mappers.csproj", "{DD95E8CB-FEEE-4329-933E-CD4F2F783210}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5A4BF37-57A6-441E-B572-89FD1EC959D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5A4BF37-57A6-441E-B572-89FD1EC959D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5A4BF37-57A6-441E-B572-89FD1EC959D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5A4BF37-57A6-441E-B572-89FD1EC959D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3464D70-24DC-4CAD-8DE8-665C3F37AE7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3464D70-24DC-4CAD-8DE8-665C3F37AE7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3464D70-24DC-4CAD-8DE8-665C3F37AE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3464D70-24DC-4CAD-8DE8-665C3F37AE7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B65F60E4-DACB-4FB7-B1F5-D54AC9FF3BDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B65F60E4-DACB-4FB7-B1F5-D54AC9FF3BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B65F60E4-DACB-4FB7-B1F5-D54AC9FF3BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B65F60E4-DACB-4FB7-B1F5-D54AC9FF3BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC69F988-A371-4A7B-9D04-5EEA361CCD07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC69F988-A371-4A7B-9D04-5EEA361CCD07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC69F988-A371-4A7B-9D04-5EEA361CCD07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC69F988-A371-4A7B-9D04-5EEA361CCD07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BB06095-A158-4945-9DD8-B64B793EDC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BB06095-A158-4945-9DD8-B64B793EDC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BB06095-A158-4945-9DD8-B64B793EDC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BB06095-A158-4945-9DD8-B64B793EDC89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85628EB9-9383-4F33-88E9-2DF33D565EEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85628EB9-9383-4F33-88E9-2DF33D565EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85628EB9-9383-4F33-88E9-2DF33D565EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85628EB9-9383-4F33-88E9-2DF33D565EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD95E8CB-FEEE-4329-933E-CD4F2F783210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD95E8CB-FEEE-4329-933E-CD4F2F783210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD95E8CB-FEEE-4329-933E-CD4F2F783210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD95E8CB-FEEE-4329-933E-CD4F2F783210}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

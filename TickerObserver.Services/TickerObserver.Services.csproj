@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TickerObserver.DataAccess\TickerObserver.DataAccess.csproj" />
+      <ProjectReference Include="..\TickerObserver.DomainModels\TickerObserver.DomainModels.csproj" />
+      <ProjectReference Include="..\TickerObserver.Mappers\TickerObserver.Mappers.csproj" />
+      <ProjectReference Include="..\TickerObserver.Parsers\TickerObserver.Parsers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Toolkit.Parsers" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>
