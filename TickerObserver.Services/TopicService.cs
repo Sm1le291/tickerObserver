@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using TickerObserver.DataAccess.Interfaces;
-using TickerObserver.DomainModels;
 using TickerObserver.Mappers;
 
 namespace TickerObserver.Services

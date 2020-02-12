@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -6,7 +5,6 @@ using Microsoft.Toolkit.Parsers;
 using Microsoft.Toolkit.Parsers.Rss;
 using TickerObserver.DataAccess.Interfaces;
 using TickerObserver.DomainModels;
-using TickerObserver.Mappers;
 
 namespace TickerObserver.Services
 {

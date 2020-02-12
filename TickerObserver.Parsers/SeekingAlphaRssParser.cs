@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
-using Microsoft.Toolkit.Parsers;
-using Microsoft.Toolkit.Parsers.Rss;
 using TickerObserver.Core;
 using TickerObserver.DomainModels;
 
