@@ -19,6 +19,16 @@ namespace TickerObserver.DataAccess
             _context.Add(tickerTopic);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> IsExists(string guid)
+        {
+            if (_context.TickerTopics.Any(x => x.Guid == guid))
+            {
+                return true;
+            }
+
+            return false;
+        }
         
         public async Task MarkAsSent(string guid)
         {

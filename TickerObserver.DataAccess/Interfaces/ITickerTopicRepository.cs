@@ -6,5 +6,7 @@ namespace TickerObserver.DataAccess.Interfaces
     public interface ITickerTopicRepository
     {
         Task Add(TickerTopic tickerTopic);
+
+        Task<bool> IsExists(string guid);
     }
 }

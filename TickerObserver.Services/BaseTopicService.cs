@@ -18,8 +18,11 @@ namespace TickerObserver.Services
 
         public async Task TrySaveTopic(DomainModels.TickerTopic rssItem, string tickerName, string feedSource)
         {
-            var item = _tickerTopicMapper.MapFromDomainModel(rssItem, tickerName, feedSource);
-            await _tickerTopicRepository.Add(item);
+            if (!await _tickerTopicRepository.IsExists(rssItem.Guid))
+            {
+                var item = _tickerTopicMapper.MapFromDomainModel(rssItem, tickerName, feedSource);
+                await _tickerTopicRepository.Add(item);
+            }
         }
     }
 }
